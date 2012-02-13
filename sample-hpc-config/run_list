@@ -1,0 +1,10 @@
+set description 005-hyena
+set email hjg@cse.msu.edu
+set freq_email Crash
+set priority 3
+set class_pref 99
+set walltime 1
+set config_dir config
+set max_cpus 90
+
+1..30 a ./run.sh $seed

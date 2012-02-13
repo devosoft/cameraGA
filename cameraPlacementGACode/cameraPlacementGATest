@@ -1,0 +1,8 @@
+import world
+import unittest
+
+""" Unit test for camera placement GA"""
+
+
+if __name__ == "__main__":
+    unittest.main()
