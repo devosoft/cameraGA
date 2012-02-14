@@ -1,6 +1,15 @@
 import ConfigParser
+from optparse import OptionParser
 
 def main():
+    parser = OptionParser()
+    parser.add_option('-s', help='starting week', type="int", nargs=1, dest="start")
+    parser.add_option('-e',help='ending week (-1 for last week of data', type="int", nargs=1, dest="end")
+    parser.add_option('-o',help='output file', type="string", nargs=1, dest="outputFile")
+    parser.add_option('-i', help='increment; 0=all data', type="int", nargs=1, dest='inc')
+                      
+    (options, args) = parser.parse_args()
+
     config = ConfigParser.ConfigParser()
     config.read('getFieldData.ini')
     
@@ -9,11 +18,25 @@ def main():
         
     locFile = config.get('ORGS','fieldFile', 'origData/allShompoleLOCs.csv')
     firstWeek = int(config.get('ORGS','firstWeek', 0))
+    if (options.start != None): firstWeek = options.start
     lastWeek = int(config.get('ORGS','lastWeek', -1))
-    locData = readLocFile(locFile, orgList, firstWeek, lastWeek)
-                    
-    printResults(config.get('OUTPUTS','outputFile', 'orgs.dat'), locData)
-
+    if (options.end != None): lastWeek = options.end
+    outputFile = config.get('OUTPUTS','outputFile', 'orgs.dat')
+    if (options.outputFile != None): outputFile=options.outputFile
+                      
+    if (options.inc == None or options.inc == 0):
+        locData = readLocFile(locFile, orgList, firstWeek, lastWeek)
+        printResults(outputFile, locData)
+    else:
+        curFirst = firstWeek
+        curLast = firstWeek + (options.inc -1 ) # the -1 is to account for the fact the data is
+                                                # in 1 week increments
+        while (curLast <= lastWeek):
+            locData = readLocFile(locFile, orgList, curFirst, curLast)
+            longOut = outputFile + "_" + str(curFirst)+"_"+str(curLast)
+            printResults(longOut, locData)
+            curFirst += options.inc 
+            curLast += options.inc 
 
 def readLocFile(filename, orgList, firstWeek, lastWeek):
     sightings = []

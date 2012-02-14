@@ -16,9 +16,10 @@ def main():
                    help='random number seed')
     parser.add_argument('-runOutput', 
                    help='run log output file')
-
     parser.add_argument('-bestOutput', 
                    help='best of run output file')
+    parser.add_argument('-sightingsData', 
+                   help='list of animal sightings')
     
     args = parser.parse_args()
     print(args)
@@ -40,6 +41,9 @@ def main():
 
     ### Load sightings
     sightingsData = config['SIGHTINGS_DATA'].get('datafile', 'sightings.dat')
+    if(args.sightingsData != None):
+        sightingsData = args.sightingsData
+        print ("Overriding sightings data...")
     sightings = readSightingsFile(sightingsData, w)
 
     ### Get equipment settings
@@ -109,7 +113,7 @@ def main():
         exit()
 
     ### Run the GA
-    g = ga.GA(gen, popSize, crossPer, mutPer, fitFuncName, runOutputFile, bestOutputFile)
+    g = ga.GA(gen, popSize, crossPer, mutPer, fitFuncName, selection, runOutputFile, bestOutputFile)
     g.initPop(w, numCameras, visibilityRadius, sightings)
     g.run()
     

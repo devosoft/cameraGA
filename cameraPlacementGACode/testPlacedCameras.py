@@ -13,6 +13,20 @@ def main():
 
     config = configparser.ConfigParser()
     config.read('hyena.ini')
+
+    parser = argparse.ArgumentParser(description='Process command line.')
+    parser.add_argument('-camFile', 
+                   help='list of camera locations')
+    parser.add_argument('-trainSightingsData', 
+                   help='list of train animal sightings')
+    parser.add_argument('-testSightingsData', 
+                   help='list of test animal sightings')
+    parser.add_argument('-analysisOutFile', 
+                   help='file for analysis output')
+    
+    args = parser.parse_args()
+    print(args)
+    
     
     ### Create the world
     thisWorld = config['LOCATION']
@@ -30,6 +44,8 @@ def main():
 
     ### Load sightings
     trainsightingsData = config['SIGHTINGS_DATA'].get('datafile', 'sightings.dat')
+    if (args.trainSightingsData != None):
+        trainsightingsData = args.trainSightingsData
     trainsightings = readSightingsFile(trainsightingsData, w)
 
     ### Get equipment settings
@@ -44,11 +60,17 @@ def main():
 
     ### Get settings for perfomance evalution
     testsightingsData = config['PERFORMANCE_EVALUATION'].get('testingDatafile', 'sightings.dat')
+    if (args.testSightingsData != None):
+        testsightingsData = args.testSightingsData
     testsightings = readSightingsFile(testsightingsData, w)
     thisEquip = config['PERFORMANCE_EVALUATION']
     try:
-      equipFile=thisEquip.get('cameraFile', 'best.dat')
-      analysisOutFile=thisEquip.get('analysisOutFile', 'analysis.dat')
+        equipFile=thisEquip.get('cameraFile', 'best.dat')
+        if (args.camFile != None):
+            equipFile = args.camFile
+        analysisOutFile=thisEquip.get('analysisOutFile', 'analysis.dat')
+        if (args.analysisOutFile != None):
+            analysisOutFile = args.analysisOutFile
 
     except ValueError:
       print ("Invalid performance evaluation parameters")
@@ -94,6 +116,8 @@ def main():
     s = "SUMMARY" + "\n" + "Training data fitness: " + train + ' ' + i2ids + "\n" + "Testing data fitness: " + test + ' ' + i3ids + "\n\n" + "TRAINING RESULTS" + "\n" + str(i2) + "\n" + "TESTING RESULTS" + "\n" + str(i3) + "\n"
     fout.write(s)
     print("\n" + s)
+    print("obs: ")
+    i3.observedSightings()
 
 def readSightingsFile(filename, w):
     sightingsReader = csv.reader(open(filename))
