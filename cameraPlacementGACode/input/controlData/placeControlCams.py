@@ -1,18 +1,28 @@
 import ConfigParser
 import math
 import random
+from optparse import OptionParser
+
 
 def main():
     config = ConfigParser.ConfigParser()
     config.read('placeControlCams.ini')
+
+    parser = OptionParser()
+    parser.add_option('-o', help='outputFile', type="string", nargs=1, dest="outputFile")
+    parser.add_option('-s', help='scenario', type="int", nargs=1, dest="scenario")
+
+    (options, args) = parser.parse_args()
     
     scenario = int(config.get('SCENARIO', 'scenario', 0))
-    maxCameras = int(config.get('SCENARIO', 'maxCameras', 0))
+    if (options.scenario != None): scenario = options.scenario
 
-    minNorthing = int(config.get('SCENARIO', 'minNorthing', 0))
-    minEasting = int(config.get('SCENARIO', 'minEasting', 0))
-    maxNorthing = int(config.get('SCENARIO', 'maxNorthing', 0))
-    maxEasting = int(config.get('SCENARIO', 'maxEasting', 0))
+    maxCameras = float(config.get('SCENARIO', 'maxCameras', 0))
+
+    minNorthing = float(config.get('SCENARIO', 'minNorthing', 0))
+    minEasting = float(config.get('SCENARIO', 'minEasting', 0))
+    maxNorthing = float(config.get('SCENARIO', 'maxNorthing', 0))
+    maxEasting = float(config.get('SCENARIO', 'maxEasting', 0))
     
     randSeed = int(config.get('SCENARIO', 'randSeed', -1))
     if (randSeed == -1):
@@ -26,8 +36,9 @@ def main():
     orgs = config.get('SCENARIO', 'orgList', "F101,F102,M103,F104,F105,F108,F110,M114,M115,F116")
     orgList = orgs.split(',')
     locFile = config.get('SCENARIO', 'locFile', '../fieldData/hyenaData/allOrgs.dat')
-            
     outfile = config.get('OUTPUT', 'outputFile', 'controlData.dat')
+            
+    if (options.outputFile != None): outfile = options.outputFile
     
     if scenario == 0 or scenario == 1:
         x_list, y_list = makeGrid(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, scenario, camRadius)
