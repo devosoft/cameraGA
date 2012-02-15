@@ -5,7 +5,7 @@ import math
 import convexHull
 
 class GA (object):
-    def __init__ (self, numGen, popSize, crossPer, mutPer, fitFunc, runOut="run.log", bestOut="best.log"):
+    def __init__ (self, numGen, popSize, crossPer, mutPer, fitFunc, selection=0, runOut="run.log", bestOut="best.log"):
         self.pop = []
         self.numGen = numGen
         self.crossPer = crossPer
@@ -14,6 +14,7 @@ class GA (object):
         self.fitFunc = fitFunc
         self.runOut = runOut
         self.bestOut = bestOut
+        self.selection = selection
             
     def __str__ (self):
         mystr = ""
@@ -34,7 +35,7 @@ class GA (object):
         runout = open(self.runOut, 'w')
         bestout = open(self.bestOut, 'w')
         runout.write('generation fitness [individuals seen]\n')
-        print('\ngeneration fitness [individuals seen]\n')
+        print('\ngeneration fitness [individuals seen]')
         for i in range(0, self.numGen):
             # create offspring
             offspring = []
@@ -51,18 +52,25 @@ class GA (object):
             
             newpop = []
             while len(newpop) < self.popSize:
-                newpop.extend(self.tournament_selection(4,2))
+                if (self.selection == 0):
+                    newpop.extend(self.tournament_selection(2,1))
+                else:
+                    newpop.append(self.fps())
             self.pop = []
             self.pop = newpop
             self.pop.sort()
             s = str(i) + ' ' + str(self.pop[-1].getFitness())  + ' ' + str(self.pop[-1].getIDs()) + '\n'
             runout.write(s)
             print(str(i) + ' ' + str(self.pop[-1].getFitness()) + ' ' + str(self.pop[-1].getIDs()))
-        bestout.write('Best set of cameras: \n')
-        bestout.write(str(self.pop[-1]))
-        print('\nBest set of cameras: \n')
-        print(str(self.pop[-1]))
-
+    
+        bestout.write('Best Camera Set:\n' + str(self.pop[-1]))
+        bestout.write('\nSighted by Best:\n'+ str(self.pop[-1].getIDs()) + '\n')
+        bestout.write('\nBestFitness:\n' + str(self.pop[-1].getFitness()) + '\n') 
+                
+        print('\n\nBest Camera Set:\n' + str(self.pop[-1]))
+        print('\nSighted by Best:\n'+ str(self.pop[-1].getIDs()) + '\n')
+        print('\nBest Fitness:\n' + str(self.pop[-1].getFitness()) + '\n') 
+    
     def tournament_selection (self, n, k):
         inds = random.sample(self.pop, n)
         inds.sort()
@@ -82,8 +90,8 @@ class GA (object):
             if selected <= curScore:
                 selectedInd = i
                 break
-        
-        return self.pop[selectedInd]
+        ind = self.pop[selectedInd]
+        return (ind)
     
 class Individual (object):
     def __init__ (self, aWorld, camCount=1, camRad = 1, \
@@ -152,8 +160,7 @@ class Individual (object):
         self.evalFitness()
 
     def __str__(self):
-        myStr = "Fitness: " + str(self.fitness) + "\n"
-        myStr += str(self.animalsSeen) + "\n"
+        myStr = ""
         for c in self.cameras:
             myStr += str(c)
             myCurrSightings = []
@@ -163,7 +170,7 @@ class Individual (object):
                         myCurrSightings.append(s.getAnimalID())
             if (len(myCurrSightings) > 0): 
                 myStr += ', ' + str(myCurrSightings)
-            myStr += "\n"
+            myStr += '\n'
         return myStr        
 
     def __lt__(self, other):
@@ -198,7 +205,7 @@ class Individual (object):
         return myDistFitness
 
     def getSightingsMade(self):
-        return len(self.mySightings)       
+        return len(self.mySightings)
 
     def getIDs(self):
         self.animalsSeen = list(set([s.getAnimalID() for s in self.mySightings]))

@@ -95,16 +95,20 @@ def main():
         exit()
             
     ### Get the set of cameras from the file.
-    f = open(equipFile, 'r')
-    fout = open(analysisOutFile, 'w')
-
+    camReader = csv.reader(open(equipFile))
     cameras = []
-    for line in f:
-        if (line[0].isdigit()):
-            splitline = line.split(",")
-            coorx = float(splitline[0])
-            coory = float(splitline[1])
-            cameras.append(camera.Camera(world.Location(coorx, coory), visibilityRadius))
+    # skip header line
+    camReader.__next__()
+    for line in camReader:
+        try:
+            line[0].isdigit()
+        # exit at end of coord list
+        except:
+            break
+        coorx = float(line[0])
+        coory = float(line[1])
+        cameras.append(camera.Camera(world.Location(coorx, coory), visibilityRadius))
+
     i2 = ga.Individual(w, camCount=numCameras, camRad=visibilityRadius, fitFunc=fitFuncName, sightings=trainsightings)
     i2.setCameras(cameras)
     train = str(i2.evalFitness())
@@ -113,10 +117,13 @@ def main():
     i3.setCameras(cameras)
     test = str(i3.evalFitness())
     i3ids = str(i3.getIDs())
-    s = "SUMMARY" + "\n" + "Training data fitness: " + train + ' ' + i2ids + "\n" + "Testing data fitness: " + test + ' ' + i3ids + "\n\n" + "TRAINING RESULTS" + "\n" + str(i2) + "\n" + "TESTING RESULTS" + "\n" + str(i3) + "\n"
-    fout.write(s)
-    print("\n" + s)
-    print("obs: ")
+    s = 'SUMMARY\nTraining data fitness: ' + train + ' ' + i2ids + '\nTesting data fitness: ' + test + ' ' + i3ids + '\n\nTRAINING RESULTS\n' + str(i2) + '\nTESTING RESULTS\n' + str(i3) + '\n'
+
+    fout = open(analysisOutFile, 'w')
+    fout.write(s + '\nscore:\n' + train + ' ' + test)
+            
+    print('\n' + s)
+    print('obs: ')
     i3.observedSightings()
 
 def readSightingsFile(filename, w):
