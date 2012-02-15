@@ -65,7 +65,7 @@ class GA (object):
     
         bestout.write('Best Camera Set:\n' + str(self.pop[-1]))
         bestout.write('\nSighted by Best:\n'+ str(self.pop[-1].getIDs()) + '\n')
-        bestout.write('\nBestFitness:\n' + str(self.pop[-1].getFitness()) + '\n') 
+        bestout.write('\nBestFitness:\n' + str(self.pop[-1].getFitness())) 
                 
         print('\n\nBest Camera Set:\n' + str(self.pop[-1]))
         print('\nSighted by Best:\n'+ str(self.pop[-1].getIDs()) + '\n')
