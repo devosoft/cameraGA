@@ -1,6 +1,4 @@
-Best set of cameras: 
-Fitness: 3
-['M115']
+Best Camera Set:
 187125, 9793294
 188856, 9789777
 181364, 9790495
@@ -55,3 +53,9 @@ Fitness: 3
 180334, 9795597
 179747, 9787482
 190129, 9783491
+
+Sighted by Best:
+['M115']
+
+BestFitness:
+3

@@ -47,7 +47,7 @@ def main():
         x_list, y_list = placeRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, camRadius)
         printList(outfile, x_list, y_list, 0)
     elif scenario == 3:
-        x_list, y_list, num_rand = getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, orgList, locFile, mu)
+        x_list, y_list, num_rand = getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, orgList, locFile, mu, camRadius)
         printList(outfile, x_list, y_list, num_rand)
         
 def makeGrid(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, scenario, camRadius):
@@ -144,7 +144,7 @@ def placeRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, ca
     
     return x_list, y_list
 
-def getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, orgList, locFile, mu):
+def getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, orgList, locFile, mu, camRadius):
     sightings = []
     f = open(locFile)
     fileData = f.read()
@@ -169,8 +169,8 @@ def getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing
         elif int(splitdata[2]) < minNorthing or int(splitdata[2]) > maxNorthing:
             continue
         else:
-            x_locs.append(splitdata[1])
-            y_locs.append(splitdata[2])
+            x_locs.append(splitdata[1].strip())
+            y_locs.append(splitdata[2].strip())
 
     num_sightings = abs(int(random.gauss(0, mu)))
     if num_sightings > maxCameras:
@@ -186,16 +186,16 @@ def getOppSightings(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing
         y_list.append(y_locs[target])
 
     numRandCameras = maxCameras - len(x_list)
-    x_list, y_list = fillRandom(numRandCameras, minEasting, maxEasting, minNorthing, maxNorthing, camRadius, x_list, y_list)
+    x_list, y_list = fillRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, camRadius, x_list, y_list)
     return x_list, y_list, numRandCameras
 
-def fillRandom(numRandCameras, minEasting, maxEasting, minNorthing, maxNorthing, camRadius, x_list, y_list):
+def fillRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, camRadius, x_list, y_list):
     low_x = minEasting + camRadius
     hi_x = maxEasting - camRadius
     low_y = minNorthing + camRadius
     hi_y = maxNorthing - camRadius
     
-    while len(x_list) < numRandCameras:
+    while len(x_list) < maxCameras:
         x_num = random.randint(low_x, hi_x)
         y_num = random.randint(low_y, hi_y)
         
@@ -203,8 +203,8 @@ def fillRandom(numRandCameras, minEasting, maxEasting, minNorthing, maxNorthing,
         if len(x_list) > 0:
             index = 0
             for x_val in x_list:
-                x_dist = x_num - x_val
-                y_dist = y_num - y_list[index]
+                x_dist = x_num - int(x_val)
+                y_dist = y_num - int(y_list[index])
                 index += 1
                 
                 offset = math.sqrt(float(x_dist * x_dist) + float(y_dist * y_dist)) 
@@ -228,7 +228,8 @@ def printList(outfile, x_list, y_list, num_rand):
     output = open(outfile, 'w')
     print('Number of control cameras to place = ' + str(len(x_list)) + '\n')
     if num_rand > 0:
-        print('(' + str(len(x_list)) - num_rand + ' opportunistic sightings and' + num_rand + ' placed randomly)\n')
+        tmpCount = len(x_list) - num_rand
+        print('(' + str(tmpCount) + ' opportunistic sightings and ' + str(num_rand) + ' placed randomly)\n')
     index = 0
     for x in x_list:
         output.write(str(x) + ', ' + str(y_list[index]) + '\n')
