@@ -122,6 +122,8 @@ class Individual (object):
     def setCameras(self, cameras):
         """ Place cameras for testing purposes"""
         if (self.camCount != len(cameras)):
+            print(len(cameras))
+            print(self.camCount)
             raise AssertionError ("Wrong number of cameras")
         badCam = [c for c in cameras if (self.world.locationInWorld(c.loc) == False)]
         if (len(badCam) > 0):

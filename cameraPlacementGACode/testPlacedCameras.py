@@ -23,6 +23,8 @@ def main():
                    help='list of test animal sightings')
     parser.add_argument('-analysisOutFile', 
                    help='file for analysis output')
+    parser.add_argument('-numCameras', 
+                   help='number of cameras in placed camera list (number to test)')
     
     args = parser.parse_args()
     print(args)
@@ -52,6 +54,8 @@ def main():
     thisEquip = config['CAMERA_SPECS']
     try:
         numCameras = int(thisEquip.get('numCameras', 50))
+        if (args.numCameras != None):
+          numCameras = int(args.numCameras)
         visibilityRadius = float(thisEquip.get('visibilityRadius', 5))
 
     except ValueError:

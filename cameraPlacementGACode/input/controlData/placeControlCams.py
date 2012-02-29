@@ -11,6 +11,7 @@ def main():
     parser = OptionParser()
     parser.add_option('-o', help='outputFile', type="string", nargs=1, dest="outputFile")
     parser.add_option('-s', help='scenario', type="int", nargs=1, dest="scenario")
+    parser.add_option('-l', help='scenario', type="string", nargs=1, dest="locFile")
 
     (options, args) = parser.parse_args()
     
@@ -35,9 +36,11 @@ def main():
 
     orgs = config.get('SCENARIO', 'orgList', "F101,F102,M103,F104,F105,F108,F110,M114,M115,F116")
     orgList = orgs.split(',')
+
     locFile = config.get('SCENARIO', 'locFile', '../fieldData/hyenaData/allOrgs.dat')
-    outfile = config.get('OUTPUT', 'outputFile', 'controlData.dat')
-            
+    if (options.locFile != None): locFile = options.locFile
+
+    outfile = config.get('OUTPUT', 'outputFile', 'controlData.dat')            
     if (options.outputFile != None): outfile = options.outputFile
     
     if scenario == 0 or scenario == 1:
@@ -219,6 +222,7 @@ def fillRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, cam
 def printMultList(outfile, x_list, y_list):
     output = open(outfile, 'w')
     print('Actual number of control cameras to place = ' + str(len(x_list) * len(y_list)) + '\n')
+    output.write('# Actual number of control cameras to place = ' + str(len(x_list) * len(y_list)) + '\n')
     for x in x_list:
         for y in y_list:
             output.write(str(x) + ', ' + str(y) + '\n')
@@ -227,9 +231,10 @@ def printMultList(outfile, x_list, y_list):
 def printList(outfile, x_list, y_list, num_rand):
     output = open(outfile, 'w')
     print('Number of control cameras to place = ' + str(len(x_list)) + '\n')
+    tmpCount = len(x_list) - num_rand
+    output.write('# Number of control cameras to place = ' + str(len(x_list)) + ' (includes ' + str(int(tmpCount)) + ' opportunistic sightings + ' + str(int(num_rand)) + ' placed randomly)' + '\n')
     if num_rand > 0:
-        tmpCount = len(x_list) - num_rand
-        print('(' + str(tmpCount) + ' opportunistic sightings and ' + str(num_rand) + ' placed randomly)\n')
+        print('(' + str(int(tmpCount)) + ' opportunistic sightings and ' + str(int(num_rand)) + ' placed randomly)\n')
     index = 0
     for x in x_list:
         output.write(str(x) + ', ' + str(y_list[index]) + '\n')
