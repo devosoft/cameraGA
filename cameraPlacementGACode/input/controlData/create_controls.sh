@@ -10,10 +10,10 @@
 
 for ((i=0; i<4; i++)); do
   for ((j=0; j<30; j++)); do
-      mkdir M114
-      mkdir M114/rep${j}
-	for ((k=0; k<4; k++)); do
-      python placeControlCams.py -s ${i} -o M114/rep${j}/c_${i}_${k} -l ../fieldData/hyenaData/M114/M114_${k}_${k}
+      mkdir F104-F105
+      mkdir F104-F105/rep${j}
+	for ((k=0; k<61; k++)); do
+      python placeControlCams.py -s ${i} -o F104-F105/rep${j}/c_${i}_${k} -l ../fieldData/hyenaData/F104-F105/F104-F105_${k}_${k}
 	done;
   done;
 done;
