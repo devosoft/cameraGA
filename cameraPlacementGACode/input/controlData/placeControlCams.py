@@ -104,6 +104,9 @@ def randomStratified(xblocks, yblocks, minEasting, minNorthing, xblock_size, ybl
     next_low_x = minEasting + camRadius  
     next_low_y = minNorthing + camRadius
 
+    xblock_size = int(xblock_size)
+    yblock_size = int(yblock_size)
+  
     x_list = []
     x_list.append(random.randint(next_low_x, next_low_x + xblock_size - 2 * camRadius))
     y_list = []
