@@ -9,17 +9,17 @@
 # k = number of weeks of data 
 
 
-num_cameras=$((60))
-#func=$((2))
-for ((func=0; func<4;func++)); do
+num_cameras=$((45))
+func=$((2))
+#for ((func=0; func<4;func++)); do
   for ((i=0; i<2; i++)); do
     for ((j=0; j<30; j++)); do
-        mkdir ../experimental_results/fit_func${func}/F104-F105
-        mkdir ../experimental_results/fit_func${func}/F104-F105/control_tests
-        mkdir ../experimental_results/fit_func${func}/F104-F105/control_tests/rep${j}
-      for ((k=0; k<61; k++)); do
+        mkdir ../experimental_results/fit_func${func}/M115
+        mkdir ../experimental_results/fit_func${func}/M115/control_tests
+        mkdir ../experimental_results/fit_func${func}/M115/control_tests/rep${j}
+      for ((k=0; k<24; k++)); do
         wk2=$(($k+1))
-        python3.2 testPlacedCameras.py -trainSightingsData input/fieldData/hyenaData/F104-F105/F104-F105_${k}_${k} -testSightingsData input/fieldData/hyenaData/F104-F105/F104-F105_${wk2}_${wk2} -camFile input/controlData/F104-F105/rep${j}/c_${i}_${k} -analysisOutFile ../experimental_results/fit_func${func}/F104-F105/control_tests/rep${j}/control_F104-F105_${i}_${k} -numCameras ${num_cameras}
+        python3.2 testPlacedCameras.py -trainSightingsData input/fieldData/hyenaData/M115/M115_${k}_${k} -testSightingsData input/fieldData/hyenaData/M115/M115_${wk2}_${wk2} -camFile input/controlData/M115/rep${j}/c_${i}_${k} -analysisOutFile ../experimental_results/fit_func${func}/M115/control_tests/rep${j}/control_M115_${i}_${k} -numCameras ${num_cameras} -func ${func}
       done
     done
   done
@@ -27,10 +27,10 @@ for ((func=0; func<4;func++)); do
 
   for ((i=2; i<4; i++)); do
     for ((j=0; j<30; j++)); do
-      for ((k=0; k<61; k++)); do
+      for ((k=0; k<24; k++)); do
         wk2=$(($k+1))
-        python3.2 testPlacedCameras.py -trainSightingsData input/fieldData/hyenaData/F104-F105/F104-F105_${k}_${k} -testSightingsData input/fieldData/hyenaData/F104-F105/F104-F105_${wk2}_${wk2} -camFile input/controlData/F104-F105/rep${j}/c_${i}_${k} -analysisOutFile ../experimental_results/fit_func${func}/F104-F105/control_tests/rep${j}/control_F104-F105_${i}_${k}
+        python3.2 testPlacedCameras.py -trainSightingsData input/fieldData/hyenaData/M115/M115_${k}_${k} -testSightingsData input/fieldData/hyenaData/M115/M115_${wk2}_${wk2} -camFile input/controlData/M115/rep${j}/c_${i}_${k} -analysisOutFile ../experimental_results/fit_func${func}/M115/control_tests/rep${j}/control_M115_${i}_${k} -func ${func}
       done
     done
   done
-done
+#done
