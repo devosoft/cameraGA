@@ -86,7 +86,7 @@ def main():
     try:
         fitnessFunction = int(thisGA.get("fitnessFunction", 0))
         if (args.func != None):
-           fitnessFunction = args.func
+           fitnessFunction = int(args.func)
 
         if ((fitnessFunction < 0) or (fitnessFunction > 3)):
             print ("Invalid fitness function")

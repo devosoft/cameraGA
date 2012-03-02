@@ -1,6 +1,6 @@
 SUMMARY
-Training data fitness: 2 ['M114']
-Testing data fitness: 5 ['M114']
+Training data fitness: 1656544.4443359375 ['M114']
+Testing data fitness: 4455203.556884766 ['M114']
 
 TRAINING RESULTS
 175366.0, 9774501.47222
@@ -80,4 +80,4 @@ TESTING RESULTS
 
 
 score:
-2 5
+1656544.4443359375 4455203.556884766

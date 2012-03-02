@@ -1,6 +1,6 @@
 SUMMARY
-Training data fitness: 3 ['F116']
-Testing data fitness: 4 ['F116']
+Training data fitness: 1079166.666015625 ['F116']
+Testing data fitness: 6355099.083984375 ['F116']
 
 TRAINING RESULTS
 184725.5, 9772082.45833
@@ -104,4 +104,4 @@ TESTING RESULTS
 
 
 score:
-3 4
+1079166.666015625 6355099.083984375

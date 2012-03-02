@@ -77,30 +77,41 @@ def makeGrid(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, scena
     if (ceilx < 0):
       neg_ceilx = True
 
-    maxRealBlocks = 0
-    if (not neg_ceilx and not neg_floorx):
-      maxRealBlocks = max(floorx, ceilx)
+    if (neg_ceilx and neg_floorx):
+      xblocks = math.floor(xideal_blocks)
+      yblocks = math.floor(yideal_blocks)
+    elif (neg_ceilx):
+      xblocks = math.floor(xideal_blocks)
+      yblocks = math.ceil(yideal_blocks)
+    elif (neg_floorx):
+      xblocks = math.ceil(xideal_blocks)
+      yblocks = math.floor(yideal_blocks)
+    else:
       if (floorx > ceilx):
         xblocks = math.floor(xideal_blocks)
         yblocks = math.ceil(yideal_blocks)
       else:
         xblocks = math.ceil(xideal_blocks)
         yblocks = math.floor(yideal_blocks)        
-    elif (not neg_ceilx):
-      maxRealBlocks = ceilx
-      xblocks = math.ceil(xideal_blocks)
-      yblocks = math.floor(yideal_blocks)
-    elif (not neg_floorx):
-      maxRealBlocks = floorx
-      xblocks = math.floor(xideal_blocks)
-      yblocks = math.ceil(yideal_blocks)
-    else:
-      # Ceiling and floor for ideal xblocks still exceed max cameras, so have to floor both x and y
-      maxRealBlocks = maxCameras - (math.floor(xideal_blocks) * math.floor(yideal_blocks))
-
+          
     # now that we know the real number of whole blocks in columns and rows, figure out the real dimensions of a block 
     xblock_size = east_dist / xblocks
     yblock_size = north_dist / yblocks
+
+    if (maxCameras < (xblocks * yblocks)):
+      print(xblocks)
+      print(yblocks)
+      raise AssertionError ("Too many camera blocks")
+    if ((xblocks * xblock_size) > east_dist):
+      print(xblocks)
+      print(xblock_size)
+      print(east_dist)
+      raise AssertionError ("Too many easting (row) camera blocks")
+    if ((yblocks * yblock_size) > north_dist):
+      print(yblocks)
+      print(yblock_size)
+      print(north_dist)
+      raise AssertionError ("Too many northing (column) camera blocks")
 
     if (scenario == 0):
         x_list, y_list = blockCenters(xblocks, yblocks, minEasting, minNorthing, xblock_size, yblock_size)

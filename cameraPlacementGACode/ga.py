@@ -127,6 +127,9 @@ class Individual (object):
             raise AssertionError ("Wrong number of cameras")
         badCam = [c for c in cameras if (self.world.locationInWorld(c.loc) == False)]
         if (len(badCam) > 0):
+            print("Cameras outside of defined world bounds:")
+            for c in badCam:
+               print(str(c))
             raise AssertionError ("Bad camera location")
         self.cameras = cameras
         self.reset()
