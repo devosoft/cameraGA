@@ -14,7 +14,7 @@ Actual data used (world extent for all and # cams for controls 0 and 1) were:
 # lowery = 9771634 
 # uppery = 9796186 
 # 3 weeks
-# 39 cams
+# 50 cams
 
 # West
 # lowerx = 170746   
@@ -22,7 +22,7 @@ Actual data used (world extent for all and # cams for controls 0 and 1) were:
 # lowery = 9775201   
 # uppery = 9793141
 # 22 weeks
-# 52 cams
+# 50 cams
 
 # F101-F108
 # lowerx = 170746  
@@ -30,7 +30,7 @@ Actual data used (world extent for all and # cams for controls 0 and 1) were:
 # lowery = 9776675  
 # uppery = 9788876
 # 22 weeks
-# 60 cams
+# 50 cams
 
 # F104-F105
 lowerx = 173948 
@@ -38,7 +38,7 @@ upperx = 180600
 lowery = 9781489   
 uppery = 9793141
 # 61 weeks
-# 60 cams
+# 50 cams
 
 # M115
 # lowerx = 177625  
@@ -46,7 +46,7 @@ uppery = 9793141
 # lowery = 9781993   
 # uppery = 9799399
 # 24 weeks
-# 45 cams
+# 50 cams
 
 # F116
 # lowerx = 183875   

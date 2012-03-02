@@ -57,23 +57,48 @@ def makeGrid(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, scena
     east_dist = maxEasting - minEasting
     north_dist = maxNorthing - minNorthing
 
+    # ratios indicate relative number of blocks in each dimension of the world (assuming square blocks)
     x_y_ratio = east_dist / north_dist
     y_x_ratio = north_dist / east_dist
 
+    # assume number of cameras in rows is equal to number of cameras in columns, then adjust by the ratios 
+    # this gives ideal (fractional) blocks to use in rows and columns
     xideal_blocks = math.sqrt(maxCameras) * x_y_ratio
     yideal_blocks = math.sqrt(maxCameras) * y_x_ratio
-    numidealblocks = xideal_blocks * yideal_blocks
 
-    maxRealBlocks = maxCameras + min(maxCameras + (math.floor(xideal_blocks) * math.ceil(yideal_blocks)), maxCameras + (math.ceil(xideal_blocks) * math.floor(yideal_blocks)))
+    # now, given the ideals, round number of blocks up and down to get whole blocks only 
+    # then check to see which type of rounding (if any) ends up exceeding maxCameras
+    floorx = maxCameras - (math.floor(xideal_blocks) * math.ceil(yideal_blocks))
+    ceilx = maxCameras - (math.ceil(xideal_blocks) * math.floor(yideal_blocks))
+    neg_floorx = False
+    neg_ceilx = False
+    if (floorx < 0): 
+      neg_floorx = True
+    if (ceilx < 0):
+      neg_ceilx = True
 
-    xblocks = math.ceil(xideal_blocks)
-    if maxRealBlocks % math.ceil(xideal_blocks):
+    maxRealBlocks = 0
+    if (not neg_ceilx and not neg_floorx):
+      maxRealBlocks = max(floorx, ceilx)
+      if (floorx > ceilx):
         xblocks = math.floor(xideal_blocks)
+        yblocks = math.ceil(yideal_blocks)
+      else:
+        xblocks = math.ceil(xideal_blocks)
+        yblocks = math.floor(yideal_blocks)        
+    elif (not neg_ceilx):
+      maxRealBlocks = ceilx
+      xblocks = math.ceil(xideal_blocks)
+      yblocks = math.floor(yideal_blocks)
+    elif (not neg_floorx):
+      maxRealBlocks = floorx
+      xblocks = math.floor(xideal_blocks)
+      yblocks = math.ceil(yideal_blocks)
+    else:
+      # Ceiling and floor for ideal xblocks still exceed max cameras, so have to floor both x and y
+      maxRealBlocks = maxCameras - (math.floor(xideal_blocks) * math.floor(yideal_blocks))
 
-    yblocks = math.ceil(yideal_blocks)
-    if maxRealBlocks % math.ceil(yideal_blocks):
-        yblocks = math.floor(yideal_blocks)
-
+    # now that we know the real number of whole blocks in columns and rows, figure out the real dimensions of a block 
     xblock_size = east_dist / xblocks
     yblock_size = north_dist / yblocks
 
