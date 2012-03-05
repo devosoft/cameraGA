@@ -1,0 +1,54 @@
+1) Get number of weeks of data
+-open getOrgMaxs.dat
+-change locData to pull locations from file having locations for entire population
+-change outfile to desired destination
+-run getOrgMaxs.dat
+
+2) Get specific org(s) locations
+-open getFieldData.ini
+-specify input location data file (can be file for entire population)
+-specify starting week ( == 0)
+-specify last week of data desired as max number of weeks for specified org(s) generated in step #1
+-specify 0 as increment to use (create one data set)
+-specify orgs to pull data for
+-specify destination file for outputs
+-run getFieldData.py
+
+3) Get world extent & number of weeks for specific org(s)
+-open getOrgMaxs.py
+-change locData to pull locations from the file created in step #2
+-change outfile to desired destination
+-run getOrgMaxs.dat
+
+4) Get org locations by week(s)
+-reopen getFieldData.ini
+-specify new input location data file (==file created in step #3)
+-specify starting week
+-specify last week of data desired (== global number from step #3)
+-specify 1 as increment to use (create data by weeks)
+-specify orgs to pull data for
+-specify root name for output destination files
+
+5) Place control cameras
+-open placeControlCams.ini
+-open create_controls.sh (if doing batch of multiple control types)
+-in ini file, set orgList
+-in ini file, set min/max easting/northing based on global output from step #3
+-in ini file, set maxCameras, etc
+-if doing batches, set i,j,k limits in for loops
+-if doing batches, set root name for output destination files and input files
+-run create_controls.sh (if batches) or placeControlCams.py (no batches)
+-if running control types 0 or 1 (or batches), make note of number of actual cameras used from this generated output
+ 
+6) Test control cameras
+-open hyena.ini
+-open test_control_data.sh (if doing batches of control types and/or weeks)
+-in ini file, set min/max easting/northing as in step #5
+-if doing batches, no other settings in ini file are important
+-if not doing batches, set everything in ini (other than populationSize, selection, crossoverPer, mutationPer)
+-if doing batches, is sh script, set i,j,k limits for loops
+-if doing batches, set number of cameras for control types 0 and 1 (based on output in step #5) 
+-if doing batches, set input and output directories
+-run test_control_data.sh (if batches) or testPlacedCameras.py (no batches)
+-pray that you didn't screw up anything in steps 1-5
+-wait
