@@ -1,6 +1,6 @@
 def main():
-    outfile = 'OrgMaxs.dat'
-    locData = readLocFile('allOrgs.dat', outfile)
+    outfile = 'F101-F108Maxs.dat'
+    locData = readLocFile('F101-F108.dat', outfile)
 
 def readLocFile(infile, outfile):
     sightings = []

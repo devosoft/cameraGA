@@ -23,6 +23,10 @@ def main():
                    help='list of test animal sightings')
     parser.add_argument('-analysisOutFile', 
                    help='file for analysis output')
+    parser.add_argument('-numCameras', 
+                   help='number of cameras in placed camera list (number to test)')
+    parser.add_argument('-func', 
+                      help='fitness function to evaluate')
     
     args = parser.parse_args()
     print(args)
@@ -52,6 +56,8 @@ def main():
     thisEquip = config['CAMERA_SPECS']
     try:
         numCameras = int(thisEquip.get('numCameras', 50))
+        if (args.numCameras != None):
+          numCameras = int(args.numCameras)
         visibilityRadius = float(thisEquip.get('visibilityRadius', 5))
 
     except ValueError:
@@ -79,6 +85,9 @@ def main():
     thisGA = config['GA_SETTINGS']
     try:
         fitnessFunction = int(thisGA.get("fitnessFunction", 0))
+        if (args.func != None):
+           fitnessFunction = int(args.func)
+
         if ((fitnessFunction < 0) or (fitnessFunction > 3)):
             print ("Invalid fitness function")
             exit()
@@ -90,6 +99,7 @@ def main():
             fitFuncName = "getTotalAnimalRange"
         elif (fitnessFunction == 3):
             fitFuncName = "getProductAnimalRanges"
+        
     except ValueError:
         print ("Invalid value for GA settings")
         exit()

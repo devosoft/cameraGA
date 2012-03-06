@@ -1,4 +1,4 @@
-getFieldData.py and getOrgMaxs are hackish scripts specialized to our data.
+getFieldData.py and getOrgMaxs are scripts specialized to our data.
 They are simply there to yank out field data which will later be queried to get control data.
 The yanking isn't written in a generalized way.
 They are not intended for distribution (in this format).

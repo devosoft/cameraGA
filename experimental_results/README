@@ -1,0 +1,66 @@
+Target number of cameras for controls was set to 50.
+Control types 0 (block centers) and 1 (random stratified) can have fewer than 50 cameras, because of the nature of grid building.
+Control types 1 (random) and 2 (opportunistic) always had 50 cameras.
+Fitness functions 1 and 3 were not run on individuals, only on groups (west, east, F104-F105, F101-F108).
+
+n = 3 for individuals (M114,M115,F116) -- all of whom wore GPS collars
+n = 2 for social groups (F104 + F105, F101 + F108)
+n = 2 for sub-populations / multiple adjacent groups (M115 + F116 (=east); F101 + F108, F110, F104 + F105 (=west)) (subpop of 2 groups; subpop of 3 groups)
+
+Actual data used (world extent for all and # cams for controls 0 and 1) were:
+# East
+# lowerx = 177647  
+# upperx = 190820 
+# lowery = 9771634 
+# uppery = 9796186 
+# 3 weeks
+# 42 cams
+
+# West
+# lowerx = 170746   
+# upperx = 180584
+# lowery = 9775201   
+# uppery = 9793141
+# 22 weeks
+# 39 cams
+
+# F101-F108
+# lowerx = 170746  
+# upperx = 177811
+# lowery = 9776675  
+# uppery = 9788876
+# 22 weeks
+# 48 cams
+
+# F104-F105
+# lowerx = 173948 
+# upperx = 180600 
+# lowery = 9781489   
+# uppery = 9793141
+# 61 weeks
+# 48 cams
+
+# M115
+# lowerx = 177625  
+# upperx = 190820 
+# lowery = 9781993   
+# uppery = 9799399
+# 24 weeks
+# 50 cams
+
+# F116
+# lowerx = 183875   
+# upperx = 190679
+# lowery = 9771634  
+# uppery = 9782397 
+# 3 weeks
+# 48 cams
+
+# M114
+# lowerx = 173682   
+# upperx = 180418
+# lowery = 9774030  
+# uppery = 9791003 
+# 2 weeks
+# 36 cams
+ 

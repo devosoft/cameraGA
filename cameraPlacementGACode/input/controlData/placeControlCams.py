@@ -11,6 +11,7 @@ def main():
     parser = OptionParser()
     parser.add_option('-o', help='outputFile', type="string", nargs=1, dest="outputFile")
     parser.add_option('-s', help='scenario', type="int", nargs=1, dest="scenario")
+    parser.add_option('-l', help='scenario', type="string", nargs=1, dest="locFile")
 
     (options, args) = parser.parse_args()
     
@@ -35,9 +36,11 @@ def main():
 
     orgs = config.get('SCENARIO', 'orgList', "F101,F102,M103,F104,F105,F108,F110,M114,M115,F116")
     orgList = orgs.split(',')
+
     locFile = config.get('SCENARIO', 'locFile', '../fieldData/hyenaData/allOrgs.dat')
-    outfile = config.get('OUTPUT', 'outputFile', 'controlData.dat')
-            
+    if (options.locFile != None): locFile = options.locFile
+
+    outfile = config.get('OUTPUT', 'outputFile', 'controlData.dat')            
     if (options.outputFile != None): outfile = options.outputFile
     
     if scenario == 0 or scenario == 1:
@@ -54,25 +57,61 @@ def makeGrid(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, scena
     east_dist = maxEasting - minEasting
     north_dist = maxNorthing - minNorthing
 
+    # ratios indicate relative number of blocks in each dimension of the world (assuming square blocks)
     x_y_ratio = east_dist / north_dist
     y_x_ratio = north_dist / east_dist
 
+    # assume number of cameras in rows is equal to number of cameras in columns, then adjust by the ratios 
+    # this gives ideal (fractional) blocks to use in rows and columns
     xideal_blocks = math.sqrt(maxCameras) * x_y_ratio
     yideal_blocks = math.sqrt(maxCameras) * y_x_ratio
-    numidealblocks = xideal_blocks * yideal_blocks
 
-    maxRealBlocks = maxCameras + min(maxCameras + (math.floor(xideal_blocks) * math.ceil(yideal_blocks)), maxCameras + (math.ceil(xideal_blocks) * math.floor(yideal_blocks)))
+    # now, given the ideals, round number of blocks up and down to get whole blocks only 
+    # then check to see which type of rounding (if any) ends up exceeding maxCameras
+    floorx = maxCameras - (math.floor(xideal_blocks) * math.ceil(yideal_blocks))
+    ceilx = maxCameras - (math.ceil(xideal_blocks) * math.floor(yideal_blocks))
+    neg_floorx = False
+    neg_ceilx = False
+    if (floorx < 0): 
+      neg_floorx = True
+    if (ceilx < 0):
+      neg_ceilx = True
 
-    xblocks = math.ceil(xideal_blocks)
-    if maxRealBlocks % math.ceil(xideal_blocks):
+    if (neg_ceilx and neg_floorx):
+      xblocks = math.floor(xideal_blocks)
+      yblocks = math.floor(yideal_blocks)
+    elif (neg_ceilx):
+      xblocks = math.floor(xideal_blocks)
+      yblocks = math.ceil(yideal_blocks)
+    elif (neg_floorx):
+      xblocks = math.ceil(xideal_blocks)
+      yblocks = math.floor(yideal_blocks)
+    else:
+      if (floorx > ceilx):
         xblocks = math.floor(xideal_blocks)
-
-    yblocks = math.ceil(yideal_blocks)
-    if maxRealBlocks % math.ceil(yideal_blocks):
-        yblocks = math.floor(yideal_blocks)
-
+        yblocks = math.ceil(yideal_blocks)
+      else:
+        xblocks = math.ceil(xideal_blocks)
+        yblocks = math.floor(yideal_blocks)        
+          
+    # now that we know the real number of whole blocks in columns and rows, figure out the real dimensions of a block 
     xblock_size = east_dist / xblocks
     yblock_size = north_dist / yblocks
+
+    if (maxCameras < (xblocks * yblocks)):
+      print(xblocks)
+      print(yblocks)
+      raise AssertionError ("Too many camera blocks")
+    if ((xblocks * xblock_size) > east_dist):
+      print(xblocks)
+      print(xblock_size)
+      print(east_dist)
+      raise AssertionError ("Too many easting (row) camera blocks")
+    if ((yblocks * yblock_size) > north_dist):
+      print(yblocks)
+      print(yblock_size)
+      print(north_dist)
+      raise AssertionError ("Too many northing (column) camera blocks")
 
     if (scenario == 0):
         x_list, y_list = blockCenters(xblocks, yblocks, minEasting, minNorthing, xblock_size, yblock_size)
@@ -101,6 +140,9 @@ def randomStratified(xblocks, yblocks, minEasting, minNorthing, xblock_size, ybl
     next_low_x = minEasting + camRadius  
     next_low_y = minNorthing + camRadius
 
+    xblock_size = int(xblock_size)
+    yblock_size = int(yblock_size)
+  
     x_list = []
     x_list.append(random.randint(next_low_x, next_low_x + xblock_size - 2 * camRadius))
     y_list = []
@@ -219,6 +261,7 @@ def fillRandom(maxCameras, minEasting, maxEasting, minNorthing, maxNorthing, cam
 def printMultList(outfile, x_list, y_list):
     output = open(outfile, 'w')
     print('Actual number of control cameras to place = ' + str(len(x_list) * len(y_list)) + '\n')
+    output.write('# Actual number of control cameras to place = ' + str(len(x_list) * len(y_list)) + '\n')
     for x in x_list:
         for y in y_list:
             output.write(str(x) + ', ' + str(y) + '\n')
@@ -227,9 +270,10 @@ def printMultList(outfile, x_list, y_list):
 def printList(outfile, x_list, y_list, num_rand):
     output = open(outfile, 'w')
     print('Number of control cameras to place = ' + str(len(x_list)) + '\n')
+    tmpCount = len(x_list) - num_rand
+    output.write('# Number of control cameras to place = ' + str(len(x_list)) + ' (includes ' + str(int(tmpCount)) + ' opportunistic sightings + ' + str(int(num_rand)) + ' placed randomly)' + '\n')
     if num_rand > 0:
-        tmpCount = len(x_list) - num_rand
-        print('(' + str(tmpCount) + ' opportunistic sightings and ' + str(num_rand) + ' placed randomly)\n')
+        print('(' + str(int(tmpCount)) + ' opportunistic sightings and ' + str(int(num_rand)) + ' placed randomly)\n')
     index = 0
     for x in x_list:
         output.write(str(x) + ', ' + str(y_list[index]) + '\n')

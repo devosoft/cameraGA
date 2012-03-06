@@ -1,0 +1,4 @@
+SubjectID, UTMEasting, UTMNorthing, ObservationDate, ObservationTime, ObsTimeDate, TheoreticDayTime, ObsDay, ObsWeek, ObsNum
+F104, 177935, 9785989, 25-Feb-07, 13:25, 39138.55903, 0, 0, 0, 0
+F105, 178115, 9786216, 5-Mar-07, 18:00, 39146.75, 0, 0, 0, 0
+F105, 178115, 9786216, 8-Mar-07, 16:20, 39149.68056, 2.93056, 2, 0, 1

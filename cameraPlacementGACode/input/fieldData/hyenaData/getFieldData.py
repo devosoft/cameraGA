@@ -24,19 +24,22 @@ def main():
     outputFile = config.get('OUTPUTS','outputFile', 'orgs.dat')
     if (options.outputFile != None): outputFile=options.outputFile
                       
-    if (options.inc == None or options.inc == 0):
+    increment = int(config.get('ORGS','increment', 0))
+    if (options.inc != None): increment=options.inc
+
+    if (increment == 0):
         locData = readLocFile(locFile, orgList, firstWeek, lastWeek)
         printResults(outputFile, locData)
     else:
         curFirst = firstWeek
-        curLast = firstWeek + (options.inc -1 ) # the -1 is to account for the fact the data is
+        curLast = firstWeek + (increment - 1) # the -1 is to account for the fact the data is
                                                 # in 1 week increments
         while (curLast <= lastWeek):
             locData = readLocFile(locFile, orgList, curFirst, curLast)
             longOut = outputFile + "_" + str(curFirst)+"_"+str(curLast)
             printResults(longOut, locData)
-            curFirst += options.inc 
-            curLast += options.inc 
+            curFirst += increment 
+            curLast += increment 
 
 def readLocFile(filename, orgList, firstWeek, lastWeek):
     sightings = []
